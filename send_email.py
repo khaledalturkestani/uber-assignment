@@ -1,5 +1,4 @@
 from flask import Flask, request, make_response, render_template, json 
-from flask.ext.sqlalchemy import SQLAlchemy
 import requests
 import re
 import mandrill
@@ -15,11 +14,10 @@ app = Flask(__name__)
 
 # Mailgun variabls:
 mailgun_key = "mailgun_api_key"
-mailgun_server = "sandbox_server"
+mailgun_server = "mailgun_sandbox_server"
 
 # Mandrill variables:
 mandrill_key = "mandrill_api_key"
-
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):

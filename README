@@ -1,0 +1,55 @@
+Instructions:
+
+- Create an ubuntu EC2 instance:
+  Make sure in the security rules to add a "Custom TCP" rule for port 5000
+- SSH into the instance and download the needed dependencies by typing th following in the terminal:
+  $ sudo apt-get install git
+  $ sudo apt-get install python-pip
+  $ sudo pip install Flask
+  $ sudo pip install mandrill
+  $ sudo pip install sqlalchemy
+- clone the application from GitHub:
+  $ git clone 
+- Sign up for Mailgun and Mandrill and fill in the required fields at the top of send_email.py with the provided keys by the services.
+- Start the server by typing the following inside the folder "uber-coding-assignment":
+  $ python send_email.py
+- Now you can either issue a post request to instance_public_ip:5000/email with JSON parameters, or
+  access a simple form in a web browser by typing the URL:
+  instance_public_ip:5000
+
+Language/Framework:
+- I chose Python over Node.js since I am more familiar with it, it is supported by Mailgun and Mandrill, and is used by Uber.
+- I chose Flask as a microframework over others since it is widely used and supported by Python community, and is supported by
+  Mailgun.
+- In addition, I am using SQLAlchemy for interfacing with the database since it is well integrated with Flask, has a simple ORM 
+  representation, and handles basic functions like escaping input and correct query handling to prevent SQL injection.
+- Used unittest, Python's unit testing framework, for testing 
+
+Feature summary:
+- Accepts a JSON string with the parameters as specified 
+- Returns a 200 response on successfull queueing of email to one of the two services.
+  - Tries Mailgun first, then Mandrill if Mailgun fails.
+- Returns a 400 response on bad input.
+- Returns a 502 Bad Gateway if both services fail.
+- Form validation in the web browser.
+- Input validation in the application layer: 
+  - Verifies valid email addresses format.
+  - Verifies presense of all email message paramters.
+  - Verifies non-empty parameters.
+- Input validation in the ORM layer:
+  - Only checks if email addresses are valid
+  - Allows empty strings
+- Input validation in the DB layer:
+  - Only enforces non-null fields
+
+Features not implemented but should be considered: 
+- Delayed delivery.
+- Error logging.
+- More thorough testing on different input field combinations. Also testing of the two service providers. 
+- Validating email existence and not just valid format.
+- A more robust RegEx for validating email addresses. 
+
+Notes:
+- Not sure if it's a good idea to always go for the services in the same order. It might be better to decide which email service to choose using a slightly more intelligent function, which would probably use cost to decide as the main metric to decide on a service at any given time. 
+
+
