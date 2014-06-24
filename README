@@ -8,14 +8,17 @@ Instructions:
   $ sudo pip install Flask
   $ sudo pip install mandrill
   $ sudo pip install sqlalchemy
+  $ sudo apt-get install sqlite3
 - clone the application from GitHub:
   $ git clone 
 - Sign up for Mailgun and Mandrill and fill in the required fields at the top of send_email.py with the provided keys by the services.
-- Start the server by typing the following inside the folder "uber-coding-assignment":
+- To start the server, open a terimal, cd into uber-assignment, and type:
   $ python send_email.py
-- Now you can either issue a post request to instance_public_ip:5000/email with JSON parameters, or
+- Now you can either issue a post request to instance_public_ip:5000/email with JSON parameters as specified in the assignment, or
   access a simple form in a web browser by typing the URL:
   instance_public_ip:5000
+- To run automated tests, cd into uber-assignment and type:
+  $ python send_email_tests.py
 
 Language/Framework:
 - I chose Python over Node.js since I am more familiar with it, it is supported by Mailgun and Mandrill, and is used by Uber.
@@ -23,19 +26,19 @@ Language/Framework:
   Mailgun.
 - In addition, I am using SQLAlchemy for interfacing with the database since it is well integrated with Flask, has a simple ORM 
   representation, and handles basic functions like escaping input and correct query handling to prevent SQL injection.
-- Used unittest, Python's unit testing framework, for testing 
+- Used unittest, Python's unit testing framework, for testing. 
 
 Feature summary:
-- Accepts a JSON string with the parameters as specified 
+- Accepts a JSON string with the parameters as specified in the assignment.
 - Returns a 200 response on successfull queueing of email to one of the two services.
   - Tries Mailgun first, then Mandrill if Mailgun fails.
 - Returns a 400 response on bad input.
 - Returns a 502 Bad Gateway if both services fail.
-- Form validation in the web browser.
+- Accepts an optional "datetime" parameter for scheduled delivery.
+- Saves sent emails and service responses in a SQLite database.
 - Input validation in the application layer: 
-  - Verifies valid email addresses format.
+  - Verifies valid email addresses format (build-in browser function).
   - Verifies presense of all email message paramters.
-  - Verifies non-empty parameters.
 - Input validation in the ORM layer:
   - Only checks if email addresses are valid
   - Allows empty strings
@@ -43,13 +46,10 @@ Feature summary:
   - Only enforces non-null fields
 
 Features not implemented but should be considered: 
-- Delayed delivery.
+- Need to authenticate the user issuing the POST requests. Right now the service is very insecure since anyone can post a request to it and there is no access control. Ideally, this service should be dispatched internally instead of a POST request. Another simpler solution would be to authenticate the user through a username/password or have them submit the api keys and verifying them, which require doing so over SSL to make sure the sensitive data is encrypted. 
 - Error logging.
 - More thorough testing on different input field combinations. Also testing of the two service providers. 
 - Validating email existence and not just valid format.
 - A more robust RegEx for validating email addresses. 
-
-Notes:
-- Not sure if it's a good idea to always go for the services in the same order. It might be better to decide which email service to choose using a slightly more intelligent function, which would probably use cost to decide as the main metric to decide on a service at any given time. 
-
+- Right now choosing between services always happens in the same order (i.e. Mailgun then Mandrill if Mailgun fails). It is probably better to decide which email service to choose using a slightly more intelligent function, which would probably use cost as the main metric to decide on a service at any given time. 
 
