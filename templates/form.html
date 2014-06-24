@@ -1,0 +1,94 @@
+<head>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <script type="text/javascript">
+    /*$(document).ready(function() {
+       $( "#to_name" ).rules( "add", {
+      	    required: true,
+  	    minlength: 2,
+  	    messages: {
+    	    	required: "Required input",
+    	    	minlength: jQuery.validator.format("Please, at least {0} characters are necessary")
+  	    }
+    	});
+    });*/
+    function initJS() {
+    	$('form#email_form').on('submit', function (e) {
+	    if (fields_not_empty()) {
+		send_form();
+	    } else {
+		alert("Invalid or missing input");
+	    }
+   	    //stop form submission
+   	    e.preventDefault();
+    	}); 
+    }
+
+    function fields_not_empty() {
+	var textfields = document.getElementsByClassName('field');
+	for (var i = 0; i < textfields.length; i++) {
+	    console.log(textfields[i].name);
+	    if (textfields[i].name == "datetime") {
+		console.log("got here");
+		continue;
+	    }
+	    if (textfields[i].value.length == 0) {
+		return false;
+	    }
+	}
+	return true;
+    }
+
+    function send_form() {
+ 	var payload = {};
+        $.each($('form#email_form').serializeArray(), 
+	       function(i, field) {
+    		   payload[field.name] = field.value;
+	       }); 
+	$.ajax({
+    		url: '/email',
+    		type: 'POST',
+    		data: JSON.stringify(payload),
+    		contentType: 'application/json; charset=utf-8',
+    		async: false,
+    		success: function(msg) {
+    		    alert(msg);
+    		},
+		error: function(jqXHR, statusText, errorText) {
+		    alert(jqXHR.responseText);
+		}
+	});
+	return false;
+    }
+
+  </script>
+  <style>
+    body {
+      font-family: Tahoma sans-serif;
+    }
+    
+    input, textarea {
+      width: 300px;
+    }   
+    textarea {
+      height: 100px;
+    }
+    .shell {
+      width: 300px;
+      margin: auto;
+    }
+  </style>
+</head>
+
+<body onload="initJS()">
+  <form action="/" name="f" id="email_form">
+    <div class="shell"><div class="label">To (required):</div> <input class="field" type="email" name="to"></div>
+    <div class="shell"><div class="label">To Name (required):</div> <input class="field" type="text" name="to_name"></div>
+    <div class="shell"><div class="label">From (required):</div> <input class="field" type="email" name="from"></div>  ­ 
+    <div class="shell"><div class="label">From Name (required):</div> <input class="field" type="text" name="from_name"></div>  ­ 
+    <div class="shell"><div class="label">Subject (required):</div> <input class="field" type="text" name="subject"></div>  ­ 
+    <div class="shell"><div class="label">Time (optional - in UTC)</div>
+    <div class="label">Format: YYYY-MM-DD HH:MM:SS:</div> <input class="field" type="text" name="datetime"></div>  ­ 
+    <div class="shell"><div class="label">Body (required):</div> <textarea class="field" type="text" name="body"></textarea></div> ­ 
+    <div class="shell"><input type="submit" value="Submit"></div>
+ </form>
+</body>
