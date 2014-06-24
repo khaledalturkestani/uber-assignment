@@ -10,7 +10,7 @@ Instructions:
   $ sudo pip install sqlalchemy
   $ sudo apt-get install sqlite3
 - clone the application from GitHub:
-  $ git clone 
+  $ git clone https://github.com/khaledalturkestani/uber-assignment.git
 - Sign up for Mailgun and Mandrill and fill in the required fields at the top of send_email.py with the provided keys by the services.
 - To start the server, open a terimal, cd into uber-assignment, and type:
   $ python send_email.py
